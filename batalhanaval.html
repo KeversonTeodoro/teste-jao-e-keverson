@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Batalha Naval</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        .board { display: grid; grid-template-columns: repeat(10, 40px); gap: 2px; margin: 20px auto; width: max-content; }
+        .cell { width: 40px; height: 40px; background-color: lightblue; border: 1px solid navy; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .hit { background-color: red; }
+        .miss { background-color: gray; }
+    </style>
+</head>
+<body>
+    <h1>Batalha Naval</h1>
+    <div class="board" id="board"></div>
+    <script>
+        const boardSize = 10;
+        const board = document.getElementById("board");
+        let ships = [
+            { x: 2, y: 3 }, { x: 3, y: 3 }, { x: 4, y: 3 }, // Navio horizontal
+            { x: 6, y: 5 }, { x: 6, y: 6 } // Navio vertical
+        ];
+        
+        function createBoard() {
+            for (let y = 0; y < boardSize; y++) {
+                for (let x = 0; x < boardSize; x++) {
+                    const cell = document.createElement("div");
+                    cell.classList.add("cell");
+                    cell.dataset.x = x;
+                    cell.dataset.y = y;
+                    cell.addEventListener("click", fireTorpedo);
+                    board.appendChild(cell);
+                }
+            }
+        }
+
+        function fireTorpedo(event) {
+            const x = parseInt(event.target.dataset.x);
+            const y = parseInt(event.target.dataset.y);
+            const hit = ships.some(ship => ship.x === x && ship.y === y);
+            
+            if (hit) {
+                event.target.classList.add("hit");
+                ships = ships.filter(ship => !(ship.x === x && ship.y === y));
+                if (ships.length === 0) {
+                    setTimeout(() => alert("Parabéns! Você venceu!"), 100);
+                }
+            } else {
+                event.target.classList.add("miss");
+            }
+            event.target.removeEventListener("click", fireTorpedo);
+        }
+        
+        createBoard();
+    </script>
+</body>
+</html>
